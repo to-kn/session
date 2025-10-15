@@ -79,7 +79,7 @@ export const SessionOptions = z.object({
       {
         input: z.tuple([ z.any() ]),
         output: z.string(),
-      },
+      }
     ),
     /**
      * set the external key
@@ -89,7 +89,7 @@ export const SessionOptions = z.object({
       {
         input: z.tuple([ z.any(), z.string() ]),
         output: z.void(),
-      },
+      }
     ),
   }).optional(),
   /**
@@ -104,7 +104,7 @@ export const SessionOptions = z.object({
       {
         input: z.tuple([ z.string(), z.number(), z.object({ rolling: z.boolean(), ctx: z.any() }) ]),
         output: z.promise(z.any()),
-      },
+      }
     ),
     /**
      * set session data for key, with a `maxAge` (in ms)
@@ -114,7 +114,7 @@ export const SessionOptions = z.object({
       {
         input: z.tuple([ z.string(), z.any(), z.number(), z.object({ rolling: z.boolean(), changed: z.boolean(), ctx: z.any() }) ]),
         output: z.promise(z.void()),
-      },
+      }
     ),
     /**
      * destroy session data for key
@@ -124,7 +124,7 @@ export const SessionOptions = z.object({
       {
         input: z.tuple([ z.string(), z.object({ ctx: z.any() }) ]),
         output: z.promise(z.void()),
-      },
+      }
     ),
   }).optional(),
   /**
@@ -137,7 +137,7 @@ export const SessionOptions = z.object({
     {
       input: z.tuple([ z.any() ]),
       output: z.string(),
-    },
+    }
   )
     .optional()
     .default(() => util.encode),
@@ -145,7 +145,7 @@ export const SessionOptions = z.object({
     {
       input: z.tuple([ z.string() ]),
       output: z.any(),
-    },
+    }
   )
     .default(() => util.decode),
   /**
@@ -157,7 +157,7 @@ export const SessionOptions = z.object({
     {
       input: z.tuple([ z.any() ]),
       output: z.string(),
-    },
+    }
   )
     .optional(),
   /**
@@ -173,7 +173,7 @@ export const SessionOptions = z.object({
     {
       input: z.tuple([ z.any(), z.any() ]),
       output: z.any(),
-    },
+    }
   )
     .optional(),
   /**
@@ -184,7 +184,7 @@ export const SessionOptions = z.object({
     {
       input: z.tuple([ z.any(), z.any() ]),
       output: z.void(),
-    },
+    }
   )
     .optional(),
 });
@@ -197,13 +197,13 @@ export type CreateSessionOptions = Partial<SessionOptions>;
 type Middleware = (ctx: any, next: any) => Promise<void>;
 
 /**
- * Initialize session middleware with `opts`:
+ * Initialize session middleware.
  *
  * - `key` session cookie name ["koa.sess"]
  * - all other options are passed as cookie options
  *
- * @param {Object} [opts] session options
- * @param {Application} app koa application instance
+ * @param {CreateSessionOptions} [opts] Optional session options object
+ * @param {any} app Koa application instance whose context will be extended
  * @public
  */
 export function createSession(opts: CreateSessionOptions, app: any): Middleware;
@@ -258,7 +258,8 @@ export function createSession(opts: CreateSessionOptions | any, app: any): Middl
 export default createSession;
 
 /**
- * format and check session options
+ * Format and validate session options.
+ * @param {SessionOptions} opts Mutable session options object to normalize
  */
 function formatOptions(opts: SessionOptions) {
   // defaults
@@ -301,10 +302,10 @@ function formatOptions(opts: SessionOptions) {
 }
 
 /**
- * extend context prototype, add session properties
+ * Extend Koa context prototype with session helpers.
  *
- * @param  {Object} context koa's context prototype
- * @param  {Object} opts session options
+ * @param {object} context Koa context prototype to decorate
+ * @param {SessionOptions} opts Resolved session options bound to the context
  */
 function extendContext(context: object, opts: SessionOptions) {
   if (context.hasOwnProperty(GET_CONTEXT_SESSION)) {
